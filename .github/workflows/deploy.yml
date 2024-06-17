@@ -1,0 +1,32 @@
+name: shuangseqiu.js CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: npm install
+    - run: npm test
+    - name: Deploy
+      if: github.ref == 'refs/heads/main'
+      run: |
+        echo "Deploying..."
+        # 这里可以添加实际的部署命令，例如：
+        # npm run build
+        # scp -r ./build user@server:/path/to/deploy
